@@ -35,7 +35,6 @@ def generate_paraphrases(tree):
 
 
 class ParaphraseView(APIView):
-    serializer_class = TreeSerializer
 
     def get(self, request):
         tree = request.query_params.get('tree', None)
@@ -50,8 +49,5 @@ class ParaphraseView(APIView):
         except ValueError as error:
             return Response({'error': str(error)}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = TreeSerializer(data=paraphrases[0:int(limit)], many=True)
-        if serializer.is_valid():
-            return Response({'paraphrases': serializer.data})
-        else:
-            return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serializer = TreeSerializer(paraphrases[0:int(limit)], many=True)
+        return Response({'paraphrases': serializer.data})
